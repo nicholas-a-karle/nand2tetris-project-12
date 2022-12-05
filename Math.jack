@@ -9,12 +9,37 @@
  */
 class Math {
 
+    static Array twoTo;
+    static int m2qy;
+
     /** Initializes the library. */
     function void init() {
+        let twoTo = Array.new(16);
+        let twoTo[0] = 1;
+        let twoTo[1] = 2;
+        let twoTo[2] = 4;
+        let twoTo[3] = 8;
+        let twoTo[4] = 16;
+        let twoTo[5] = 32;
+        let twoTo[6] = 64;
+        let twoTo[7] = 128;
+        let twoTo[8] = 256;
+        let twoTo[9] = 512;
+        let twoTo[10] = 1024;
+        let twoTo[11] = 2048;
+        let twoTo[12] = 4096;
+        let twoTo[13] = 8192;
+        let twoTo[14] = 16384;
+        let twoTo[15] = 32767;
     }
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        } else {
+            return x;
+        }
     }
 
     /** Returns the product of x and y. 
@@ -22,7 +47,105 @@ class Math {
      *  program's code, it handles it by invoking this method. In other words,
      *  the Jack expressions x*y and multiply(x,y) return the same value.
      */
+     //efficiency: approximate when algorithm
+        /*
+        multiply(x, y):
+            sum = 0
+            shiftedx = x
+            for i = 0...n-1 do
+                if (bit[i] on y is 1)
+                    sum = sum + shiftedx
+                shiftedx << 1 <=> shiftedx = shiftedx + shiftedx
+            return sum
+
+        vs.
+
+        multiply(x, y):
+            sum = 0
+            for (smaller of the two):
+                sum += (larger of the two)
+            return sum
+
+        the time of the first depends on the bits
+        the time of the second depends on the numbers
+        the time of the first is usually much quicker
+        */
     function int multiply(int x, int y) {
+        //special cases
+        //case: x or y is 0
+        if ((x = 0) | (y = 0)) {
+            return 0;
+        }
+        //case: x or y is 1
+        if (x = 1) {
+            return y;
+        }
+        if (y = 1) {
+            return x;
+        }
+
+        var int sum, counter, shx, small, large;
+        var Array binaries;
+        let sum = 0;
+        let counter = 14;
+        let shx = x;
+        let binaries = Array.new(15);
+        intToPositiveBin(y, binaries);
+        if (x < y) {
+            let small = y;
+            let large = x;
+        } else {
+            let small = x;
+            let large = y;
+        }
+
+        //the exact number of additions in the primary algorithm is
+        // 2 * 15 + number of ones in binary
+        //the exact number of additions in the second algorithm is
+        // 2 * small
+        //use primary when 2*small > 30 + ones
+        //problem: overhead for differentiating in every case is too high
+        //assume most of the binary is 0, 2*small > 30, small > 15
+        if (small > 15) {
+            //primary algorithm
+            /*
+            for i = 0...n-1 do
+                if (bit[i] on y is 1)
+                    sum = sum + shiftedx
+                shiftedx << 1 <=> shiftedx = shiftedx + shiftedx
+            */
+            while (counter > 0) {
+                if (binaries[counter] == 1) {
+                    sum = sum + shx;
+                }
+                shx = shx + shx;
+                counter = counter - 1;
+            }
+        } else {
+            //secondary algorithm
+            /*
+            for (smaller of the two):
+                sum += (larger of the two)
+            */
+            while (small > 0) {
+                sum = sum + large;
+                small = small - 1;
+            }
+        }
+
+        //if only one is negative, flip sign
+        if (x < 0) {
+            //x is negative
+            if (y > 0) {
+                sum = -sum;
+            }
+        } else {
+            //x is positive
+            if (y < 0) {
+                sum = -sum;
+            }
+        }
+        return sum;
     }
 
     /** Returns the integer part of x/y.
@@ -30,18 +153,102 @@ class Math {
      *  program's code, it handles it by invoking this method. In other words,
      *  the Jack expressions x/y and divide(x,y) return the same value.
      */
+    /*
+    if y > x return 0
+    q = dividie(x, 2 * y)
+    if ((x - 2 * q * y) < y)
+        return 2 * q
+    else
+        return 2 * q + 1
+    */
     function int divide(int x, int y) {
+        if (y > x) {
+            let m2qy = 0;
+            return 0;
+        }
+        var int q;
+        let q = divide(x, y + y);
+        if ((x - m2qy) < y) {
+            return q + q;
+        } else {
+            let m2qy = m2qy + y;
+            return q + q + 1;
+        }
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+        var int y, counter, comparison;
+        let max = 180;
+        let y = 90;
+        //binary search on possible range
+        //note: sqrt(32676) = 181.01, therefore 181 is the highest value, max is 180
+        //if y*y < x, return y+1
+        while ((y > 0) & (y < max)) {
+            let comparison = sqrtCompare(y, x);
+            if (comaprison = 1) {
+                //high, move to lower half (0, y)
+                y = divide(y, 2);
+            } else if (comparison = -1) {
+                //low, move to upper half (y, 180)
+                y = divide(y+180, 2);
+            } else {
+                //correct
+                return y;
+            }
+        }
+        return y;
+    }
+
+    function int sqrtCompare(int sqrt, int x) {
+        var int high, low;
+        let high = multiply(x+1, x+1);
+        let low = multiply(x, x);
+        if (low > sqrt) {
+            return -1;
+        } else if (high < sqrt) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        } else {
+            return b;
+        }
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
+        if (a < b) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+
+    function void intToPositiveBin(int value, Array container) {
+        var int valueLeft; 
+		var int counter;
+		
+		let valueLeft = value;
+		let counter = 14;
+		
+		while(counter > -1) {
+			if((valueLeft > twoTo[counter]) | (valueLeft = twoTo[counter])) {
+				let container[14 - counter] = 1;
+				let valueLeft = valueLeft - twoTo[counter];
+			} else {
+				let container[14 - counter] = 0;
+			}
+			
+			let counter = counter - 1;
+		}
+		
+		return;
     }
 }
