@@ -3,32 +3,102 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/12/Memory.jack
 
+static int freeHead;
+//static bool defragmented;
+
 /**
  * This library provides two services: direct access to the computer's main
  * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
  * consists of 32,768 words, each holding a 16-bit binary number.
- */ 
+ */
 class Memory {
 
     /** Initializes the class. */
     function void init() {
+        //heapBase = 2048
+        var Array mem;
+        let mem = 0;
+        //let defragmented = true;
+
+        let freeHead = 2048;
+
+        let mem[freeHead] = 14336; //size
+        let mem[freeHead + 1] = -1; //next, -1 = no next
     }
 
     /** Returns the RAM value at the given address. */
     function int peek(int address) {
+        var Array mem;
+        let mem = 0;
+        return mem[address];
     }
 
     /** Sets the RAM value at the given address to the given value. */
     function void poke(int address, int value) {
+        var Array mem;
+        let mem = 0;
+        let mem[address] = value;
     }
 
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
+        var Array mem;
+        var int block, prev;
+        let mem = 0;
+
+        let block = freeHead;
+        while (~(mem[block + 1] = -1) & (mem[block] < size)) {
+            let prev = block;
+            let block = mem[block + 1];
+        }
+        //EITHER mem[block] >= size OR mem[block + 1] = -1
+        //if mem[block] < size, return -1, fail
+
+        if (mem[block] < size) {
+            //if (~(defragmented)) {
+            //    defragment();
+            //    return alloc(size);
+            //} else {
+                return -1;
+            //}
+        } else {
+            //allocate
+
+            //if mem[block] > size
+            if (mem[block] > size) {
+                //resize block and relocate
+                let mem[prev + 1] = block + size;
+                let mem[block + size] = mem[block] - size;
+                let mem[block + size + 1] = mem[block + 1];
+            } else {
+                //pop block from list
+                let mem[prev + 1] = mem[block + 1];
+            }
+        }
+        return block;
     }
 
     /** De-allocates the given object (cast as an array) by making
      *  it available for future allocations. */
     function void deAlloc(Array o) {
-    }    
+        //let defragmented = false;
+        var Array mem;
+        var int block, freed;
+        let mem = 0;
+        let freed = o - 1;
+
+        let block = freeHead;
+        while (~(mem[block + 1] = -1)) {
+            let block = mem[block + 1];
+        }
+        //mem[block + 1] = -1
+        mem[block + 1] = freed
+    }
+
+    /** Defragments list, basically sorts it
+     *  */
+    //function void defragment() {
+    //    let defragmented = true;
+    //}
 }
