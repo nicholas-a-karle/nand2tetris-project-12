@@ -29,7 +29,7 @@ class Output {
         let colSize = 8;
         let curRow = 0;
         let curCol = 0;
-        do initMap();
+        do Output.initMap();
         return;
     }
 
@@ -199,12 +199,13 @@ class Output {
 
         let curRow = i;
         let curCol = j;
+        return;
     }
 
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
     function void printChar(char c) {
-		var int currentRow, currentColumn, bitmapLine, addr, addrVal;
+		var int currentRow, currentColumn, bitmapLine, addr, addrVal, i;
         var Array bitmap;
 		if(currentColumn > maxCols) {
 			do Output.println();
@@ -212,8 +213,8 @@ class Output {
 	
 		let bitmap = Output.getMap(c);
 		
-		let currentRow = cursorRow * rowWidth;
-		let currentColumn = cursorColumn * columnWidth;
+		let currentRow = currentRow * rowSize;
+		let currentColumn = currentColumn * colSize;
 		let addr = 16384 + ((currentRow * 32) + (currentColumn / 16));
 		
 		let i = 0;
@@ -222,7 +223,7 @@ class Output {
 			let addrVal = Memory.peek(addr);
 			let bitmapLine = bitmap[i];
 			
-			if(odd(cursorColumn)) {
+			if(Output.odd(currentColumn)) {
 				let addrVal = addrVal & (255);
 				let bitmapLine = bitmapLine * 256;
 				let addrVal = addrVal | bitmapLine;
@@ -235,7 +236,7 @@ class Output {
 			let addr = addr + 32;
 			let i = i + 1;
 		}
-		let cursorColumn = cursorColumn + 1;
+		let currentColumn = currentColumn + 1;
 		
 		return;
     }

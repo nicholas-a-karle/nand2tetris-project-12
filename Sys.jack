@@ -33,14 +33,19 @@ class Sys {
         var int i;
         let i = duration;
         while (i > 0) {
-            i = i * i;
-            i = i / i;
-            i = i - 1;
+            let i = i * i;
+            let i = i / i;
+            let i = i - 1;
         }
+        return;
     }
 
     /** Displays the given error code in the form "ERR<errorCode>",
      *  and halts the program's execution. */
     function void error(int errorCode) {
+        do Output.printString("ERR<");
+        do Output.printInt(errorCode);
+        do Output.printString(">");
+        return;
     }
 }

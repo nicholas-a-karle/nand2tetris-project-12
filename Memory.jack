@@ -97,7 +97,7 @@ class Memory {
             let block = mem[block + 1];
         }
         //mem[block + 1] = -1
-        mem[block + 1] = freed
+        let mem[block + 1] = freed;
         return;
     }
 

@@ -12,7 +12,7 @@
 class Screen {
 
     static boolean color;
-    static int screenStart, screenEnd, ;
+    static int screenStart, screenEnd;
     static Array twoTo;
 
     /** Initializes the Screen. */
@@ -44,7 +44,7 @@ class Screen {
 
     /** Erases the entire screen. */
     function void clearScreen() {
-        var i;
+        var int i;
         let i = screenStart;
         while (i < screenEnd) {
             do Memory.poke(i, 0);
@@ -57,6 +57,7 @@ class Screen {
      *  Black is represented by true, white by false. */
     function void setColor(boolean b) {
         let color = b;
+        return;
     }
 
     /** Draws the (x,y) pixel, using the current color. */
@@ -96,13 +97,13 @@ class Screen {
         let b = 0;
         let diff = 0;
         while ((a < dx + 1) & (b < dy + 1)) {
-            do drawPixel(x + a, y + b);
+            do Screen.drawPixel(x + a, y + b);
             if (diff < 0) {
-                a = a + 1;
-                diiff = diff + dy;
+                let a = a + 1;
+                let diff = diff + dy;
             } else {
-                b = b + 1;
-                diff = diff - dx;
+                let b = b + 1;
+                let diff = diff - dx;
             }
         }
         return;
@@ -116,10 +117,11 @@ class Screen {
 
         (x1, y2)    (x2, y2)
         */
-        do drawLine(x1, y1, x1, y2);
-        do drawLine(x1, y2, x2, y2);
-        do drawLine(x2, y2, x2, y1);
-        do drawLine(x2, y1, x1, y1);
+        do Screen.drawLine(x1, y1, x1, y2);
+        do Screen.drawLine(x1, y2, x2, y2);
+        do Screen.drawLine(x2, y2, x2, y1);
+        do Screen.drawLine(x2, y1, x1, y1);
+        return;
     }
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
@@ -127,8 +129,9 @@ class Screen {
         var int dy;
         let dy = -r;
         while (dy < r + 1) {
-            do drawLine(x - Math.sqrt((r * r) - (dy * dy)), y + dy, x + Math.sqrt((r * r) - (dy * dy)) , y + dy);
-            dy = dy + 1;
+            do Screen.drawLine(x - Math.sqrt((r * r) - (dy * dy)), y + dy, x + Math.sqrt((r * r) - (dy * dy)) , y + dy);
+            let dy = dy + 1;
         }
+        return;
     }
 }

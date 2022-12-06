@@ -12,7 +12,7 @@ class Keyboard {
 
     /** Initializes the keyboard. */
     function void init() {
-        let keyLoc = 24576
+        let keyLoc = 24576;
         return;
     } 
 
@@ -48,7 +48,7 @@ class Keyboard {
      * of the pressed key.
      */
     function char readChar() {
-        var char key, char, cursor;
+        var char key, ch, cursor;
         let key = Keyboard.keyPressed();
         let cursor = 124;
         while(~(key = 0)) {
@@ -62,12 +62,12 @@ class Keyboard {
 			
 			let key = Keyboard.keyPressed();
 		}
-        let char = key;
+        let ch = key;
         while(~(key = 0)) {
             let key = Keyboard.keyPressed();
         }
-        do Output.printChar(char);
-        return char;
+        do Output.printChar(ch);
+        return ch;
     }
 
     /**								
@@ -87,11 +87,13 @@ class Keyboard {
 
             if (next = String.backSpace()) {
                 do str.eraseLastChar();
-            } else if (next = String.newLine()) {
-                continue = false;
             } else {
-                if (continue) {
-                    do str.appendChar(next)''
+                if (next = String.newLine()) {
+                    let continue = false;
+                } else {
+                    if (continue) {
+                        do str.appendChar(next);
+                    }
                 }
             }
         }
@@ -107,7 +109,7 @@ class Keyboard {
     function int readInt(String message) {
         var String str;
         var int i;
-        let str = readLine(message);
+        let str = Keyboard.readLine(message);
         let i = str.intValue();
         do str.dispose();
         return i;

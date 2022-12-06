@@ -57,12 +57,14 @@ class String {
             return;
         }
         let chars[j] = c;
+        return;
     }
 
     /** Appends c to this string's end and returns this string. */
     method String appendChar(char c) {
         let chars[len] = c;
-        let len = len + 1
+        let len = len + 1;
+        return this;
     }
 
     /** Erases the last character from this string. */
@@ -71,6 +73,7 @@ class String {
             return;
         }
         let len = len - 1;
+        return;
     }
 
     /** Returns the integer value of this string, 
@@ -78,6 +81,7 @@ class String {
     method int intValue() {
         var int i, c, magnitude, value;
         var bool neg;
+        var Array powersOfTen;
         let i = 0;
         let value = 0;
         if (chars[i] = 45) {
@@ -87,50 +91,63 @@ class String {
             let neg = false;
         }
 
-        var Array powersOfTen;
+        
 		let powersOfTen = Array.new(6);
         let powersOfTen[0] = 1;
 		let powersOfTen[1] = 10;
 		let powersOfTen[2] = 100;
 		let powersOfTen[3] = 1000;
 		let powersOfTen[4] = 10000;
-		let powersOfTen[5] = 100000;
-        let magnitude = powersOfTen[min(len, 6) - 1];
+        let magnitude = powersOfTen[Math.min(len, 6) - 1];
 
-        while (i < len && i < 6) {
-            if (char[i] == 48) {
+        while (i < len & i < 5) {
+            if (chars[i] = 48) {
                 let c = 0;
-            } else if (char[i] == 49) {
-                let c = 1;
-            } else if (char[i] == 50) {
-                let c = 2;
-            } else if (char[i] == 51) {
-                let c = 3;
-            } else if (char[i] == 52) {
-                let c = 4;
-            } else if (char[i] == 53) {
-                let c = 5;
-            } else if (char[i] == 54) {
-                let c = 6;
-            } else if (char[i] == 55) {
-                let c = 7;
-            } else if (char[i] == 56) {
-                let c = 8;
-            } else if (char[i] == 57) {
-                let c = 9;
             } else {
-                let i = len;
-            }
-            let value = value + multiply(magnitude, c);
+                if (chars[i] = 49) {
+                    let c = 1;
+                } else {
+                    if (chars[i] = 50) {
+                        let c = 2;
+                    } else {
+                        if (chars[i] = 51) {
+                            let c = 3;
+                        } else {if (chars[i] = 52) {
+                            let c = 4;
+                        } else {if (chars[i] = 53) {
+                            let c = 5;
+                        } else {if (chars[i] = 54) {
+                            let c = 6;
+                        } else {if (chars[i] = 55) {
+                            let c = 7;
+                        } else {if (chars[i] = 56) {
+                            let c = 8;
+                        } else {if (chars[i] = 57) {
+                            let c = 9;
+                        } else {
+                            let i = len;
+                        }}}}}}
+                    }
+                }
+            }}
+            let value = value + (magnitude * c);
             let i = i + 1;
-            let magnitude = powersOfTen[min(len, 6) - i - 1];
+            let magnitude = powersOfTen[Math.min(len, 6) - i - 1];
         }
+        return value;
     }
 
     /** Sets this string to hold a representation of the given value. */
     method void setInt(int val) {
         var int decimalLength, sigDig, valTemp, decimalLength;
-        if (val == 0) {
+        var Array powersOfTen;
+        let powersOfTen = Array.new(6);
+        let powersOfTen[0] = 1;
+		let powersOfTen[1] = 10;
+		let powersOfTen[2] = 100;
+		let powersOfTen[3] = 1000;
+		let powersOfTen[4] = 10000;
+        if (val = 0) {
             do appendChar(48);
         }
 
