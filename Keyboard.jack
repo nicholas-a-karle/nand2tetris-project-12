@@ -8,7 +8,7 @@
  */
 class Keyboard {
 
-    var int keyLoc;
+    static int keyLoc;
 
     /** Initializes the keyboard. */
     function void init() {

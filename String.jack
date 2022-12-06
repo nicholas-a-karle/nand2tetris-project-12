@@ -3,8 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/12/String.jack
 
-field Array chars;
-field int len;
+
 
 /**
  * Represents character strings. In addition for constructing and disposing
@@ -14,6 +13,9 @@ field int len;
  * string-oriented operations.
  */
 class String {
+
+    field Array chars;
+    field int len;
 
     /** constructs a new empty string with a maximum length of maxLength
      *  and initial length of 0. */
