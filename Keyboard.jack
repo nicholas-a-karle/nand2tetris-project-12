@@ -8,8 +8,12 @@
  */
 class Keyboard {
 
+    var int keyLoc;
+
     /** Initializes the keyboard. */
     function void init() {
+        let keyLoc = 24576
+        return;
     } 
 
     /**
@@ -33,6 +37,9 @@ class Keyboard {
      * F1 - F12 = 141 - 152
      */
     function char keyPressed() {
+        var char key;
+        let key = Memory.peek(keyLoc);
+        return key;
     }
 
     /**								
@@ -41,6 +48,26 @@ class Keyboard {
      * of the pressed key.
      */
     function char readChar() {
+        var char key, char, cursor;
+        let key = Keyboard.keyPressed();
+        let cursor = 124;
+        while(~(key = 0)) {
+			let key = Keyboard.keyPressed();
+		}
+        while(key = 0) {
+			do Output.printChar(cursor);
+			do Sys.wait(50);
+			do Output.backSpace();
+			do Sys.wait(50);
+			
+			let key = Keyboard.keyPressed();
+		}
+        let char = key;
+        while(~(key = 0)) {
+            let key = Keyboard.keyPressed();
+        }
+        do Output.printChar(char);
+        return char;
     }
 
     /**								
@@ -49,6 +76,26 @@ class Keyboard {
      * and returns its value. Also handles user backspaces.
      */
     function String readLine(String message) {
+        var String str;
+        var char next;
+        var boolean continue;
+
+        let continue = true;
+        let str = String.new(100);
+        while (continue) {
+            let next = Keyboard.readChar();
+
+            if (next = String.backSpace()) {
+                do str.eraseLastChar();
+            } else if (next = String.newLine()) {
+                continue = false;
+            } else {
+                if (continue) {
+                    do str.appendChar(next)''
+                }
+            }
+        }
+        return str;
     }   
 
     /**								
@@ -58,5 +105,11 @@ class Keyboard {
      * entered text is detected). Also handles user backspaces. 
      */
     function int readInt(String message) {
+        var String str;
+        var int i;
+        let str = readLine(message);
+        let i = str.intValue();
+        do str.dispose();
+        return i;
     }
 }
