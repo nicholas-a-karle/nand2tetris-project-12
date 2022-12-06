@@ -3,8 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/12/Memory.jack
 
-static int freeHead;
-//static bool defragmented;
+
 
 /**
  * This library provides two services: direct access to the computer's main
@@ -12,6 +11,9 @@ static int freeHead;
  * consists of 32,768 words, each holding a 16-bit binary number.
  */
 class Memory {
+
+    static int freeHead;
+    //static boolean defragmented;
 
     /** Initializes the class. */
     function void init() {
@@ -24,6 +26,7 @@ class Memory {
 
         let mem[freeHead] = 14336; //size
         let mem[freeHead + 1] = -1; //next, -1 = no next
+        return;
     }
 
     /** Returns the RAM value at the given address. */
@@ -38,6 +41,7 @@ class Memory {
         var Array mem;
         let mem = 0;
         let mem[address] = value;
+        return;
     }
 
     /** Finds an available RAM block of the given size and returns
@@ -94,6 +98,7 @@ class Memory {
         }
         //mem[block + 1] = -1
         mem[block + 1] = freed
+        return;
     }
 
     /** Defragments list, basically sorts it
