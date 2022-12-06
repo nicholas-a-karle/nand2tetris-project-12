@@ -19,8 +19,18 @@ class Output {
     // Character map for displaying characters
     static Array charMaps; 
 
+    static int maxRows, maxCols, rowSize, colSize, curRow, curCol;
+
     /** Initializes the screen, and locates the cursor at the screen's top-left. */
     function void init() {
+        let maxRows = 22;
+        let maxCols = 63;
+        let rowSize = 11;
+        let colSize = 8;
+        let curRow = 0;
+        let curCol = 0;
+        do initMap();
+        return;
     }
 
     // Initializes the character map array
@@ -137,30 +147,30 @@ class Output {
         do Output.create(125,7,12,12,12,56,12,12,12,7,0,0);    // }
         do Output.create(126,38,45,25,0,0,0,0,0,0,0,0);        // ~
 
-	return;
+	    return;
     }
 
     // Creates the character map array of the given character index, using the given values.
     function void create(int index, int a, int b, int c, int d, int e,
                          int f, int g, int h, int i, int j, int k) {
-	var Array map;
+        var Array map;
 
-	let map = Array.new(11);
-        let charMaps[index] = map;
+        let map = Array.new(11);
+            let charMaps[index] = map;
 
-        let map[0] = a;
-        let map[1] = b;
-        let map[2] = c;
-        let map[3] = d;
-        let map[4] = e;
-        let map[5] = f;
-        let map[6] = g;
-        let map[7] = h;
-        let map[8] = i;
-        let map[9] = j;
-        let map[10] = k;
+            let map[0] = a;
+            let map[1] = b;
+            let map[2] = c;
+            let map[3] = d;
+            let map[4] = e;
+            let map[5] = f;
+            let map[6] = g;
+            let map[7] = h;
+            let map[8] = i;
+            let map[9] = j;
+            let map[10] = k;
 
-        return;
+            return;
     }
     
     // Returns the character map (array of size 11) of the given character.
@@ -176,28 +186,101 @@ class Output {
     /** Moves the cursor to the j-th column of the i-th row,
      *  and erases the character displayed there. */
     function void moveCursor(int i, int j) {
+        var char whitespace;
+        if ((i < 0) | (i > maxRows) | (j < 0) | (j > maxCols)) {
+            return;
+        }
+        let whitespace = 32;
+
+        let curRow = i;
+        let curCol = j;
+
+        do Output.printChar(whitespace);
+
+        let curRow = i;
+        let curCol = j;
     }
 
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
     function void printChar(char c) {
+		var int currentRow, currentColumn, bitmapLine, addr, addrVal;
+        var Array bitmap;
+		if(currentColumn > maxCols) {
+			do Output.println();
+		}
+	
+		let bitmap = Output.getMap(c);
+		
+		let currentRow = cursorRow * rowWidth;
+		let currentColumn = cursorColumn * columnWidth;
+		let addr = 16384 + ((currentRow * 32) + (currentColumn / 16));
+		
+		let i = 0;
+		
+		while(i < 11) {
+			let addrVal = Memory.peek(addr);
+			let bitmapLine = bitmap[i];
+			
+			if(odd(cursorColumn)) {
+				let addrVal = addrVal & (255);
+				let bitmapLine = bitmapLine * 256;
+				let addrVal = addrVal | bitmapLine;
+			} else {
+				let addrVal = addrVal & (-256);
+				let addrVal = addrVal | bitmapLine;
+			}
+			do Memory.poke(addr, addrVal);
+			
+			let addr = addr + 32;
+			let i = i + 1;
+		}
+		let cursorColumn = cursorColumn + 1;
+		
+		return;
     }
 
     /** displays the given string starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printString(String s) {
+
     }
 
     /** Displays the given integer starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printInt(int i) {
+        var String intStr;
+        let intStr = String.new(8);
+        do intStr.setInt(i);
+        do Output.printString(intStr);
+        do intStr.dispose();
+        return;
     }
 
     /** Advances the cursor to the beginning of the next line. */
     function void println() {
+        if (curRow = maxRows) {
+            let curRow = 0;
+            let curCol = 0;
+        } else {
+            let curRow = curRow + 1;
+            let curCol = 0;
+        }
+        return;
     }
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+        if(curCol = 0) {
+			do Output.moveCursor(curRow - 1, curCol);
+		} else {
+			do Output.moveCursor(curRow, curCol - 1);
+		}
+		return;
+    }
+
+    function bool odd(int val) {
+        //return bit 0 of val
+        return val & 1;
     }
 }
